@@ -1,7 +1,7 @@
 {
 	"name": "rebirth",
 	"version": "0.0.1",
-	"description": "A simplest js mvvm framework.",
+	"description": "A simple and powerful frontend MVVM framework.",
 	"main": "index.js",
 	"repository": {
 		"type": "git",
