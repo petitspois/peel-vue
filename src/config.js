@@ -17,7 +17,7 @@ structure = {
 	 * @type {Boolean}
 	 */
 
-	_delimitersChanged: true
+		_delimitersChanged: true
 
 }
 
