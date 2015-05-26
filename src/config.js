@@ -9,7 +9,7 @@ structure = {
 	 * @type {String}
 	 */
 
-		preifx: 'rb-'
+	preifx: 'rb-'
 
 	/**
 	 * Internal flag to indicate the delimiters have been changed.
@@ -17,15 +17,15 @@ structure = {
 	 * @type {Boolean}
 	 */
 
-		_delimitersChanged: true
+	_delimitersChanged: true
 
 }
 
 Object.defineProperty(structure, 'delimiters', {
-	get:function(){
+	get: function() {
 		return delimiters;
 	},
-	set:function(newValue){
+	set: function(newValue) {
 		delimiters = newValue;
 		this._delimitersChanged = true;
 	}
