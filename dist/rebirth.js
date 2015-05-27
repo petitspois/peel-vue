@@ -59,9 +59,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	function Rebirth(){
+	var _ = __webpack_require__(1);
 
+	function Rebirth(){
+		this.name = 'petitspois'
 	}
 
 
@@ -69,6 +70,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Rebirth
 
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
 
 /***/ }
 /******/ ])
