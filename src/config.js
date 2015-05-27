@@ -26,9 +26,9 @@ Object.defineProperty(structure, 'delimiters', {
 		return delimiters;
 	},
 	set: function(newValue) {
-		delimiters = newValue;∫
+		delimiters = newValue;
 		this._delimitersChanged = true;
 	}
-});∫
+});
 
 module.exports = structure;
