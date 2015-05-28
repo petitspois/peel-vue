@@ -20,7 +20,7 @@ var bannerVars = {
 }
 
 gulp.task('watch', function() {
-	watch('src/*.js', function() {
+	watch('src/**/*.js', function() {
 		gulp.start('default')
 	})
 });
