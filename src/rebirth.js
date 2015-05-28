@@ -1,4 +1,4 @@
-var _ = require('./util/');
+var _ = require('./util');
 
 function Rebirth(){
 	this.name = 'petitspois'
