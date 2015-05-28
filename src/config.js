@@ -12,6 +12,23 @@ structure = {
 	preifx: 'rb-'
 
 	/**
+	 * Whether to print debug messages.
+	 * Also enables stack trace for warnings.
+	 *
+	 * @type {Boolean}
+	 */
+
+	debug: false,
+
+	/**
+	 * Whether to suppress warnings.
+	 *
+	 * @type {Boolean}
+	 */
+
+	silent: false,
+
+	/**
 	 * Internal flag to indicate the delimiters have been changed.
 	 *
 	 * @type {Boolean}
