@@ -11,88 +11,84 @@ var mergeOptions = require('../util/merge-option')
  *                           in to the constructor.
  */
 
-exports._init = function(options) {
-	// {
-	// 	el: '#output',
-	// 	data: {
-	// 		show: 'init'
-	// 	}
-	// }
-	options = options || {}
+exports._init = function (options) {
 
-	this.$el = null
-	this.$root = options._root || this
-	this.$ = {} // child vm references
-	this.$$ = {} // element references
-	this._watcherList = [] // all watchers as an array
-	this._watchers = {} // internal watchers as a hash
-	this._userWatchers = {} // user watchers as a hash
-	this._directives = [] // all directives
+  options = options || {}
 
-	// a flag to avoid this being observed
-	this._isVue = true
+  this.$el           = null
+  this.$parent       = options._parent
+  this.$root         = options._root || this
+  this.$             = {} // child vm references
+  this.$$            = {} // element references
+  this._watcherList  = [] // all watchers as an array
+  this._watchers     = {} // internal watchers as a hash
+  this._userWatchers = {} // user watchers as a hash
+  this._directives   = [] // all directives
 
-	// events bookkeeping
-	this._events = {} // registered callbacks
-	this._eventsCount = {} // for $broadcast optimization
-	this._eventCancelled = false // for event cancellation
+  // a flag to avoid this being observed
+  this._isVue = true
 
-	// block instance properties
-	this._isBlock = false
-	this._blockStart = // @type {CommentNode}
-		this._blockEnd = null // @type {CommentNode}
+  // events bookkeeping
+  this._events         = {}    // registered callbacks
+  this._eventsCount    = {}    // for $broadcast optimization
+  this._eventCancelled = false // for event cancellation
 
-	// lifecycle state
-	this._isCompiled =
-		this._isDestroyed =
-		this._isReady =
-		this._isAttached =
-		this._isBeingDestroyed = false
-	this._unlinkFn = null
+  // block instance properties
+  this._isBlock     = false
+  this._blockStart  =          // @type {CommentNode}
+  this._blockEnd    = null     // @type {CommentNode}
 
-	// children
-	this._children = []
-	this._childCtors = {}
+  // lifecycle state
+  this._isCompiled  =
+  this._isDestroyed =
+  this._isReady     =
+  this._isAttached  =
+  this._isBeingDestroyed = false
+  this._unlinkFn    = null
 
-	// transcluded components that belong to the parent.
-	// need to keep track of them so that we can call
-	// attached/detached hooks on them.
-	this._transCpnts = []
-	this._host = options._host
+  // children
+  this._children = []
+  this._childCtors = {}
 
-	// push self into parent / transclusion host
-	if (this.$parent) {
-		this.$parent._children.push(this)
-	}
-	if (this._host) {
-		this._host._transCpnts.push(this)
-	}
+  // transcluded components that belong to the parent.
+  // need to keep track of them so that we can call
+  // attached/detached hooks on them.
+  this._transCpnts = []
+  this._host = options._host
 
-	// props used in v-repeat diffing
-	this._new = true
-	this._reused = false
+  // push self into parent / transclusion host
+  if (this.$parent) {
+    this.$parent._children.push(this)
+  }
+  if (this._host) {
+    this._host._transCpnts.push(this)
+  }
 
-	// merge options.
-	options = this.$options = mergeOptions(
-		this.constructor.options,
-		options,
-		this
-	)
+  // props used in v-repeat diffing
+  this._new = true
+  this._reused = false
 
-	// set data after merge.
-	this._data = options.data || {}
+  // merge options.
+  options = this.$options = mergeOptions(
+    this.constructor.options,
+    options,
+    this
+  )
 
-	// initialize data observation and scope inheritance.
-	this._initScope()
+  // set data after merge.
+  this._data = options.data || {}
 
-	// setup event system and option events.
-	this._initEvents()
+  // initialize data observation and scope inheritance.
+  this._initScope()
 
-	// call created hook
-	this._callHook('created')
+  // setup event system and option events.
+  this._initEvents()
 
-	// if `el` option is passed, start compilation.
-	if (options.el) {
-		this.$mount(options.el)
-	}
+  // call created hook
+  this._callHook('created')
+
+  // if `el` option is passed, start compilation.
+  if (options.el) {
+    this.$mount(options.el)
+  }
 }

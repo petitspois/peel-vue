@@ -1,4 +1,4 @@
-var config = require('../config');
+var config = require('../config')
 
 /**
  * Check if a node is in the document.
@@ -25,8 +25,6 @@ exports.inDoc = function (node) {
 
 /**
  * Extract an attribute from a node.
- *
- * 从一个节点中提取一个属性
  *
  * @param {Node} node
  * @param {String} attr
@@ -66,7 +64,6 @@ exports.after = function (el, target) {
     target.parentNode.appendChild(el)
   }
 }
-
 
 /**
  * Remove el from DOM

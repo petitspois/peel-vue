@@ -1,11 +1,11 @@
-var lang = require('./lang'),
-	extend = lang.extend;
+var lang   = require('./lang')
+var extend = lang.extend
 
-extend(exports, lang);
-extend(exports, require('./env'));
-extend(exports, require('./dom'));
-extend(exports, require('./debug'));
-extend(exports, require('./filter'));
+extend(exports, lang)
+extend(exports, require('./env'))
+extend(exports, require('./dom'))
+extend(exports, require('./filter'))
+extend(exports, require('./debug'))
 
 /**
  * Check if an element is a component, if yes return its

@@ -119,7 +119,7 @@ function teardownDirs (vm, dirs, destroying) {
 /**
  * Compile the root element of a component. There are
  * 3 types of things to process here:
- *
+ * 
  * 1. props on parent container (child scope)
  * 2. other attrs on parent container (parent scope)
  * 3. attrs on the component template root node, if

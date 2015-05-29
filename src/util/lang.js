@@ -1,8 +1,6 @@
 /**
  * Check is a string starts with $ or _
  *
- * 检查第一个字符是否为 $ 或 _
- *
  * @param {String} str
  * @return {Boolean}
  */
@@ -15,8 +13,6 @@ exports.isReserved = function (str) {
 /**
  * Guard text output, make sure undefined outputs
  * empty string
- *
- * 执行toString,值为undefined 或 null 返回空字符串
  *
  * @param {*} value
  * @return {String}
@@ -31,8 +27,6 @@ exports.toString = function (value) {
 /**
  * Check and convert possible numeric numbers before
  * setting back to data
- *
- * 转换成number
  *
  * @param {*} value
  * @return {*|Number}
@@ -50,8 +44,6 @@ exports.toNumber = function (value) {
 /**
  * Strip quotes from a string
  *
- * 字符前后是否含有引号
- *
  * @param {String} str
  * @return {String | false}
  */
@@ -67,8 +59,6 @@ exports.stripQuotes = function (str) {
 /**
  * Replace helper
  *
- * 转换大写
- *
  * @param {String} _ - matched delimiter
  * @param {String} c - matched char
  * @return {String}
@@ -79,8 +69,6 @@ function toUpper (_, c) {
 
 /**
  * Camelize a hyphen-delmited string.
- *
- * 转驼峰
  *
  * @param {String} str
  * @return {String}
@@ -130,8 +118,6 @@ exports.bind = function (fn, ctx) {
 /**
  * Convert an Array-like object to a real Array.
  *
- * 类数组转数组(比 “[].slice.call” 更快)
- *
  * @param {Array-like} list
  * @param {Number} [start] - start index
  * @return {Array}
@@ -149,8 +135,6 @@ exports.toArray = function (list, start) {
 
 /**
  * Mix properties into target object.
- *
- * 浅拷贝
  *
  * @param {Object} to
  * @param {Object} from
@@ -173,14 +157,12 @@ exports.extend = function (to, from) {
  */
 
 exports.isObject = function (obj) {
-  return obj != null && typeof obj === 'object'
+  return obj && typeof obj === 'object'
 }
 
 /**
  * Strict object type check. Only returns true
  * for plain JavaScript objects.
- *
- * 纯对象
  *
  * @param {*} obj
  * @return {Boolean}
@@ -205,8 +187,6 @@ exports.isArray = function (obj) {
 /**
  * Define a non-enumerable property
  *
- * 定义属性，枚举参数
- *
  * @param {Object} obj
  * @param {String} key
  * @param {*} val
@@ -225,8 +205,6 @@ exports.define = function (obj, key, val, enumerable) {
 /**
  * Debounce a function so it only gets called after the
  * input stops arriving after the given wait period.
- *
- * 满时间执行timeout
  *
  * @param {Function} func
  * @param {Number} wait
@@ -259,8 +237,6 @@ exports.debounce = function(func, wait) {
 /**
  * Manual indexOf because it's slightly faster than
  * native.
- *
- * 快于原生的indexOf
  *
  * @param {Array} arr
  * @param {*} obj

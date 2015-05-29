@@ -6,11 +6,12 @@ var config = require('../config')
  * minified production build.
  */
 
+enableDebug()
 
 function enableDebug () {
 
   var hasConsole = typeof console !== 'undefined'
-
+  
   /**
    * Log a message.
    *
@@ -19,7 +20,7 @@ function enableDebug () {
 
   exports.log = function (msg) {
     if (hasConsole && config.debug) {
-      console.log('[Rebirth info]: ' + msg)
+      console.log('[Vue info]: ' + msg)
     }
   }
 
@@ -31,7 +32,7 @@ function enableDebug () {
 
   exports.warn = function (msg) {
     if (hasConsole && (!config.silent || config.debug)) {
-      console.warn('[Rebirth warn]: ' + msg)
+      console.warn('[Vue warn]: ' + msg)
       /* istanbul ignore if */
       if (config.debug) {
         /* jshint debug: true */
@@ -50,5 +51,3 @@ function enableDebug () {
     }
   }
 }
-
-enableDebug();

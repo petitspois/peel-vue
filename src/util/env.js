@@ -1,8 +1,6 @@
 /**
  * Can we use __proto__?
  *
- * 存在__proto__?
- *
  * @type {Boolean}
  */
 
@@ -14,18 +12,16 @@ exports.hasProto = '__proto__' in {}
  * @type {Boolean}
  */
 
-var toString = Object.prototype.toString;
+var toString = Object.prototype.toString
 var inBrowser = exports.inBrowser =
-	typeof window !== 'undefined' &&
-	toString.call(window) !== '[object Object]'
+  typeof window !== 'undefined' &&
+  toString.call(window) !== '[object Object]'
 
 /**
  * Defer a task to execute it asynchronously. Ideally this
  * should be executed as a microtask, so we leverage
  * MutationObserver if it's available, and fallback to
  * setTimeout(0).
- *
- * 视浏览器情况采用最快的异步回调
  *
  * @param {Function} cb
  * @param {Object} ctx
@@ -45,13 +41,15 @@ exports.nextTick = (function () {
   }
   /* istanbul ignore if */
   if (typeof MutationObserver !== 'undefined') {
+    var counter = 1
     var observer = new MutationObserver(handle)
-    var textNode = document.createTextNode('rebirth')
+    var textNode = document.createTextNode(counter)
     observer.observe(textNode, {
       characterData: true
     })
     timerFunc = function () {
-      textNode.data = Math.random();
+      counter = (counter + 1) % 2
+      textNode.data = counter
     }
   } else {
     timerFunc = setTimeout
@@ -73,15 +71,15 @@ exports.nextTick = (function () {
  * @type {Boolean}
  */
 
-exports.ES5 =
+exports.isIE9 =
   inBrowser &&
-  window.dispatchEvent
+  navigator.userAgent.indexOf('MSIE 9.0') > 0
 
 /**
  * Sniff transition/animation events
  */
 
-if (inBrowser && !exports.ES5) {
+if (inBrowser && !exports.isIE9) {
   var isWebkitTrans =
     window.ontransitionend === undefined &&
     window.onwebkittransitionend !== undefined

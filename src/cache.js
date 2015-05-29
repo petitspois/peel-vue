@@ -11,11 +11,11 @@
  * @constructor
  */
 
-function Cache(limit) {
-	this.size = 0
-	this.limit = limit
-	this.head = this.tail = undefined
-	this._keymap = {}
+function Cache (limit) {
+  this.size = 0
+  this.limit = limit
+  this.head = this.tail = undefined
+  this._keymap = {}
 }
 
 var p = Cache.prototype
@@ -31,24 +31,24 @@ var p = Cache.prototype
  * @return {Entry|undefined}
  */
 
-p.put = function(key, value) {
-	var entry = {
-		key: key,
-		value: value
-	}
-	this._keymap[key] = entry
-	if (this.tail) {
-		this.tail.newer = entry
-		entry.older = this.tail
-	} else {
-		this.head = entry
-	}
-	this.tail = entry
-	if (this.size === this.limit) {
-		return this.shift()
-	} else {
-		this.size++
-	}
+p.put = function (key, value) {
+  var entry = {
+    key:key,
+    value:value
+  }
+  this._keymap[key] = entry
+  if (this.tail) {
+    this.tail.newer = entry
+    entry.older = this.tail
+  } else {
+    this.head = entry
+  }
+  this.tail = entry
+  if (this.size === this.limit) {
+    return this.shift()
+  } else {
+    this.size++
+  }
 }
 
 /**
