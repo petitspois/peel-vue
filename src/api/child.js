@@ -10,7 +10,7 @@ var _ = require('../util')
  * @return {Vue}
  * @public
  */
-
+11
 exports.$addChild = function (opts, BaseCtor) {
   BaseCtor = BaseCtor || _.Vue
   opts = opts || {}
