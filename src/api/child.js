@@ -7,40 +7,40 @@ var _ = require('../util')
  *
  * @param {Object} opts
  * @param {Function} [BaseCtor]
- * @return {Vue}
+ * @return {Rebirth}
  * @public
  */
-11
+
 exports.$addChild = function (opts, BaseCtor) {
-  BaseCtor = BaseCtor || _.Vue
+  BaseCtor = BaseCtor || _.Rebirth
   opts = opts || {}
   var parent = this
-  var ChildVue
+  var ChildRebirth
   var inherit = opts.inherit !== undefined
     ? opts.inherit
     : BaseCtor.options.inherit
   if (inherit) {
     var ctors = parent._childCtors
-    ChildVue = ctors[BaseCtor.cid]
-    if (!ChildVue) {
+    ChildRebirth = ctors[BaseCtor.cid]
+    if (!ChildRebirth) {
       var optionName = BaseCtor.options.name
       var className = optionName
         ? _.classify(optionName)
-        : 'VueComponent'
-      ChildVue = new Function(
+        : 'RebirthComponent'
+      ChildRebirth = new Function(
         'return function ' + className + ' (options) {' +
         'this.constructor = ' + className + ';' +
         'this._init(options) }'
       )()
-      ChildVue.options = BaseCtor.options
-      ChildVue.prototype = this
-      ctors[BaseCtor.cid] = ChildVue
+      ChildRebirth.options = BaseCtor.options
+      ChildRebirth.prototype = this
+      ctors[BaseCtor.cid] = ChildRebirth
     }
   } else {
-    ChildVue = BaseCtor
+    ChildRebirth = BaseCtor
   }
   opts._parent = parent
   opts._root = parent.$root
-  var child = new ChildVue(opts)
+  var child = new ChildRebirth(opts)
   return child
 }

@@ -8,7 +8,7 @@ var doc = typeof document === 'undefined' ? null : document
  *
  * @oaram {Element} el
  * @param {Element} target
- * @param {Vue} vm
+ * @param {Rebirth} vm
  * @param {Function} [cb]
  */
 
@@ -23,7 +23,7 @@ exports.append = function (el, target, vm, cb) {
  *
  * @oaram {Element} el
  * @param {Element} target
- * @param {Vue} vm
+ * @param {Rebirth} vm
  * @param {Function} [cb]
  */
 
@@ -37,7 +37,7 @@ exports.before = function (el, target, vm, cb) {
  * Remove with transition.
  *
  * @oaram {Element} el
- * @param {Vue} vm
+ * @param {Rebirth} vm
  * @param {Function} [cb]
  */
 
@@ -53,7 +53,7 @@ exports.remove = function (el, vm, cb) {
  *
  * @oaram {Element} el
  * @param {Element} target
- * @param {Vue} vm
+ * @param {Rebirth} vm
  * @param {Function} [cb]
  */
 
@@ -68,7 +68,7 @@ exports.removeThenAppend = function (el, target, vm, cb) {
  *
  * @param {DocumentFragment} block
  * @param {Node} target
- * @param {Vue} vm
+ * @param {Rebirth} vm
  */
 
 exports.blockAppend = function (block, target, vm) {
@@ -83,7 +83,7 @@ exports.blockAppend = function (block, target, vm) {
  *
  * @param {Node} start
  * @param {Node} end
- * @param {Vue} vm
+ * @param {Rebirth} vm
  */
 
 exports.blockRemove = function (start, end, vm) {
@@ -104,7 +104,7 @@ exports.blockRemove = function (start, end, vm) {
  *                  1: enter
  *                 -1: leave
  * @param {Function} op - the actual DOM operation
- * @param {Vue} vm
+ * @param {Rebirth} vm
  * @param {Function} [cb]
  */
 

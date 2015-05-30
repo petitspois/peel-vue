@@ -10,7 +10,7 @@ var uid = 0
  * and fires callback when the expression value changes.
  * This is used for both the $watch() api and directives.
  *
- * @param {Vue} vm
+ * @param {Rebirth} vm
  * @param {String} expression
  * @param {Function} cb
  * @param {Object} options

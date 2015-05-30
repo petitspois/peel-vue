@@ -6,7 +6,7 @@ module.exports = {
    * @type {String}
    */
 
-  prefix: 'v-',
+  prefix: 'rb-',
 
   /**
    * Whether to print debug messages.

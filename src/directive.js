@@ -12,13 +12,13 @@ var expParser = require('./parsers/expression')
  *
  * @param {String} name
  * @param {Node} el
- * @param {Vue} vm
+ * @param {Rebirth} vm
  * @param {Object} descriptor
  *                 - {String} expression
  *                 - {String} [arg]
  *                 - {Array<Object>} [filters]
  * @param {Object} def - directive definition object
- * @param {Vue|undefined} host - transclusion host target
+ * @param {Rebirth|undefined} host - transclusion host target
  * @constructor
  */
 

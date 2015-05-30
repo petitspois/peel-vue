@@ -23,7 +23,7 @@ exports.parsers = {
 }
 
 /**
- * Each instance constructor, including Vue, has a unique
+ * Each instance constructor, including Rebirth, has a unique
  * cid. This enables us to create wrapped "child
  * constructors" for prototypal inheritance and cache them.
  */
@@ -43,7 +43,7 @@ exports.extend = function (extendOptions) {
   var Sub = createClass(
     extendOptions.name ||
     Super.options.name ||
-    'VueComponent'
+    'RebirthComponent'
   )
   Sub.prototype = Object.create(Super.prototype)
   Sub.prototype.constructor = Sub
@@ -128,7 +128,7 @@ function createAssetRegisters (Constructor) {
 
   /**
    * Component registration needs to automatically invoke
-   * Vue.extend on object values.
+   * Rebirth.extend on object values.
    *
    * @param {String} id
    * @param {Object|Function} definition
@@ -140,7 +140,7 @@ function createAssetRegisters (Constructor) {
     } else {
       if (_.isPlainObject(definition)) {
         definition.name = id
-        definition = _.Vue.extend(definition)
+        definition = _.Rebirth.extend(definition)
       }
       this.options.components[id] = definition
     }

@@ -16,7 +16,7 @@ module.exports = {
    */
 
   bind: function () {
-    if (!this.el.__vue__) {
+    if (!this.el.__Rebirth__) {
       // create a ref anchor
       this.ref = document.createComment('v-component')
       _.replace(this.el, this.ref)
@@ -74,7 +74,7 @@ module.exports = {
    * asynchronously, and perform transition based on
    * specified transition mode. Accepts an async callback
    * which is called when the transition ends. (This is
-   * exposed for vue-router)
+   * exposed for Rebirth-router)
    *
    * @param {String} value
    * @param {Function} [cb]
@@ -138,7 +138,7 @@ module.exports = {
    * If keep alive and has cached instance, insert that
    * instance; otherwise build a new one and cache it.
    *
-   * @return {Vue} - the created instance
+   * @return {Rebirth} - the created instance
    */
 
   build: function () {
@@ -203,7 +203,7 @@ module.exports = {
    * Actually swap the components, depending on the
    * transition mode. Defaults to simultaneous.
    *
-   * @param {Vue} target
+   * @param {Rebirth} target
    * @param {Function} [cb]
    */
 
@@ -232,7 +232,7 @@ module.exports = {
   /**
    * Set childVM and parent ref
    */
-  
+
   setCurrent: function (child) {
     this.childVM = child
     var refID = child._refID || this.refID

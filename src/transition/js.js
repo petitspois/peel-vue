@@ -6,14 +6,14 @@
  * @param {Function} op - the actual DOM operation
  * @param {Object} data - target element's transition data
  * @param {Object} def - transition definition object
- * @param {Vue} vm - the owner vm of the element
+ * @param {Rebirth} vm - the owner vm of the element
  * @param {Function} [cb]
  */
 
 module.exports = function (el, direction, op, data, def, vm, cb) {
   // if the element is the root of an instance,
   // use that instance as the transition function context
-  vm = el.__vue__ || vm
+  vm = el.__Rebirth__ || vm
   if (data.cancel) {
     data.cancel()
     data.cancel = null

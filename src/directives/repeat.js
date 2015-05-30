@@ -96,7 +96,7 @@ module.exports = {
     var id = _.checkComponent(this.el, options)
     if (!id) {
       // default constructor
-      this.Ctor = _.Vue
+      this.Ctor = _.Rebirth
       // inline repeats should inherit
       this.inherit = true
       // important: transclude with no options, just
@@ -143,7 +143,7 @@ module.exports = {
       // Important: mark the template as a root node so that
       // custom element components don't get compiled twice.
       // fixes #822
-      this.template.__vue__ = true
+      this.template.__Rebirth__ = true
       this._linkFn = compile(this.template, merged)
       this.componentState = RESOLVED
       this.realUpdate(this.pendingData)
@@ -182,7 +182,7 @@ module.exports = {
         'Async resolution is not supported for v-repeat ' +
         '+ dynamic component. (component: ' + id + ')'
       )
-      return _.Vue
+      return _.Rebirth
     }
     return Ctor
   },
@@ -444,7 +444,7 @@ module.exports = {
    * there is an array in case there are duplicates.
    *
    * @param {Object} data
-   * @param {Vue} vm
+   * @param {Rebirth} vm
    * @param {String} [key]
    */
 
@@ -488,7 +488,7 @@ module.exports = {
    *
    * @param {Object} data
    * @param {String} [key]
-   * @return {Vue|undefined}
+   * @return {Rebirth|undefined}
    */
 
   getVm: function (data, key) {
@@ -517,7 +517,7 @@ module.exports = {
   /**
    * Delete a cached vm instance.
    *
-   * @param {Vue} vm
+   * @param {Rebirth} vm
    */
 
   uncacheVm: function (vm) {
@@ -540,20 +540,20 @@ module.exports = {
  * Helper to find the next element that is an instance
  * root node. This is necessary because a destroyed vm's
  * element could still be lingering in the DOM before its
- * leaving transition finishes, but its __vue__ reference
+ * leaving transition finishes, but its __Rebirth__ reference
  * should have been removed so we can skip them.
  *
- * @param {Vue} vm
+ * @param {Rebirth} vm
  * @param {CommentNode} ref
- * @return {Vue}
+ * @return {Rebirth}
  */
 
 function findNextVm (vm, ref) {
   var el = (vm._blockEnd || vm.$el).nextSibling
-  while (!el.__vue__ && el !== ref) {
+  while (!el.__Rebirth__ && el !== ref) {
     el = el.nextSibling
   }
-  return el.__vue__
+  return el.__Rebirth__
 }
 
 /**

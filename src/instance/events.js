@@ -16,7 +16,7 @@ exports._initEvents = function () {
 /**
  * Register callbacks for option events and watchers.
  *
- * @param {Vue} vm
+ * @param {Rebirth} vm
  * @param {String} action
  * @param {Object} hash
  */
@@ -39,7 +39,7 @@ function registerCallbacks (vm, action, hash) {
 /**
  * Helper to register an event/watch callback.
  *
- * @param {Vue} vm
+ * @param {Rebirth} vm
  * @param {String} action
  * @param {String} key
  * @param {*} handler
@@ -87,8 +87,8 @@ function onAttached () {
 
 /**
  * Iterator to call attached hook
- * 
- * @param {Vue} child
+ *
+ * @param {Rebirth} child
  */
 
 function callAttach (child) {
@@ -111,8 +111,8 @@ function onDetached () {
 
 /**
  * Iterator to call detached hook
- * 
- * @param {Vue} child
+ *
+ * @param {Rebirth} child
  */
 
 function callDetach (child) {

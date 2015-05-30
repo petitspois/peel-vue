@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Vue.js commits example</title>
+    <meta charset="UTF-8">
+    <title>Rebirth.js commits example</title>
     <script src="../../dist/rebirth.js"></script>
   </head>
   <body>
     <div id="output">
-        <input  type="text" v-model="show">
+        <input  type="text" rb-model="show">
         {{show}}
     </div>
 
     <script type="text/javascript">
         new Rebirth({
-            el:'#output',
             data:{
-                show:'init'
+                show:'init1212'
             }
-        });
+        }).$mount('#output');
     </script>
   </body>
 </html>

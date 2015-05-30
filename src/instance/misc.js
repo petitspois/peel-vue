@@ -44,7 +44,7 @@ exports._resolveComponent = function (id, cb) {
       var cbs = factory.pendingCallbacks = [cb]
       factory(function resolve (res) {
         if (_.isPlainObject(res)) {
-          res = _.Vue.extend(res)
+          res = _.Rebirth.extend(res)
         }
         // cache resolved
         factory.resolved = res

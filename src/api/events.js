@@ -155,7 +155,7 @@ exports.$dispatch = function () {
  * This bookkeeping allows $broadcast to return early when
  * no child has listened to a certain event.
  *
- * @param {Vue} vm
+ * @param {Rebirth} vm
  * @param {String} event
  * @param {Number} count
  */

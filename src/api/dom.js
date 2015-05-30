@@ -105,7 +105,7 @@ exports.$remove = function (cb, withTransition) {
 /**
  * Shared DOM insertion function.
  *
- * @param {Vue} vm
+ * @param {Rebirth} vm
  * @param {Element} target
  * @param {Function} [cb]
  * @param {Boolean} [withTransition]
@@ -139,7 +139,7 @@ function insert (vm, target, cb, withTransition, op1, op2) {
  * Execute a transition operation on a block instance,
  * iterating through all its block nodes.
  *
- * @param {Vue} vm
+ * @param {Rebirth} vm
  * @param {Node} target
  * @param {Function} op
  * @param {Function} cb
@@ -174,7 +174,7 @@ function query (el) {
  *
  * @param {Node} el
  * @param {Node} target
- * @param {Vue} vm - unused
+ * @param {Rebirth} vm - unused
  * @param {Function} [cb]
  */
 
@@ -188,7 +188,7 @@ function append (el, target, vm, cb) {
  *
  * @param {Node} el
  * @param {Node} target
- * @param {Vue} vm - unused
+ * @param {Rebirth} vm - unused
  * @param {Function} [cb]
  */
 
@@ -201,7 +201,7 @@ function before (el, target, vm, cb) {
  * Remove operation that takes a callback.
  *
  * @param {Node} el
- * @param {Vue} vm - unused
+ * @param {Rebirth} vm - unused
  * @param {Function} [cb]
  */
 

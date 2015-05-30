@@ -60,13 +60,7 @@ function Observer (value, type) {
   this.active = true
   this.deps = []
   _.define(value, '__ob__', this)
-  if (type === ARRAY) {
-    var augment = config.proto && _.hasProto
-      ? protoAugment
-      : copyAugment
-    augment(value, arrayMethods, arrayKeys)
-    this.observeArray(value)
-  } else if (type === OBJECT) {
+  if (type === OBJECT) {
     this.walk(value)
   }
 }
@@ -87,26 +81,16 @@ var p = Observer.prototype
 
 Observer.create = function (value) {
   if (
-    value &&
-    value.hasOwnProperty('__ob__') &&
-    value.__ob__ instanceof Observer
-  ) {
-    return value.__ob__
-  } else if (_.isArray(value)) {
-    return new Observer(value, ARRAY)
-  } else if (
     _.isPlainObject(value) &&
-    !value._isVue // avoid Vue instance
+    !value._isRebirth // avoid Rebirth instance
   ) {
     return new Observer(value, OBJECT)
   }
 }
 
 /**
- * Walk through each property and convert them into
- * getter/setters. This method should only be called when
- * value type is Object. Properties prefixed with `$` or `_`
- * and accessor properties are ignored.
+ *
+ *  循环vm._data 排除以$,_
  *
  * @param {Object} obj
  */
@@ -213,7 +197,7 @@ p.notify = function () {
  * digest the watchers. This is only called when the object
  * is observed as an instance's root $data.
  *
- * @param {Vue} vm
+ * @param {Rebirth} vm
  */
 
 p.addVm = function (vm) {
@@ -224,7 +208,7 @@ p.addVm = function (vm) {
  * Remove an owner vm. This is called when the object is
  * swapped out as an instance's $data object.
  *
- * @param {Vue} vm
+ * @param {Rebirth} vm
  */
 
 p.removeVm = function (vm) {

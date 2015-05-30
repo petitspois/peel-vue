@@ -10,7 +10,7 @@ var extend = _.extend
  *
  * @param {*} parentVal
  * @param {*} childVal
- * @param {Vue} [vm]
+ * @param {Rebirth} [vm]
  */
 
 var strats = Object.create(null)
@@ -39,7 +39,7 @@ function mergeData (to, from) {
 
 strats.data = function (parentVal, childVal, vm) {
   if (!vm) {
-    // in a Vue.extend merge, both should be functions
+    // in a Rebirth.extend merge, both should be functions
     if (!childVal) {
       return parentVal
     }
@@ -139,7 +139,7 @@ strats.elementDirectives = function (parentVal, childVal, vm, key) {
   var ret = Object.create(
     vm && vm.$parent
       ? vm.$parent.$options[key]
-      : _.Vue.options[key]
+      : _.Rebirth.options[key]
   )
   if (parentVal) {
     var keys = Object.keys(parentVal)
@@ -203,25 +203,6 @@ var defaultStrat = function (parentVal, childVal) {
     : childVal
 }
 
-/**
- * Make sure component options get converted to actual
- * constructors.
- *
- * @param {Object} components
- */
-
-function guardComponents (components) {
-  if (components) {
-    var def
-    for (var key in components) {
-      def = components[key]
-      if (_.isPlainObject(def)) {
-        def.name = key
-        components[key] = _.Vue.extend(def)
-      }
-    }
-  }
-}
 
 /**
  * Merge two option objects into a new one.
@@ -229,19 +210,13 @@ function guardComponents (components) {
  *
  * @param {Object} parent
  * @param {Object} child
- * @param {Vue} [vm] - if vm is present, indicates this is
+ * @param {Rebirth} [vm] - if vm is present, indicates this is
  *                     an instantiation merge.
  */
 
 module.exports = function mergeOptions (parent, child, vm) {
-  guardComponents(child.components)
   var options = {}
   var key
-  if (child.mixins) {
-    for (var i = 0, l = child.mixins.length; i < l; i++) {
-      parent = mergeOptions(parent, child.mixins[i], vm)
-    }
-  }
   for (key in parent) {
     merge(key)
   }

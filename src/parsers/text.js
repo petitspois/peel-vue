@@ -109,7 +109,7 @@ exports.parse = function (text) {
  * into one single expression as '"a " + b + " c"'.
  *
  * @param {Array} tokens
- * @param {Vue} [vm]
+ * @param {Rebirth} [vm]
  * @return {String}
  */
 
@@ -125,7 +125,7 @@ exports.tokensToExp = function (tokens, vm) {
  * Format a single token.
  *
  * @param {Object} token
- * @param {Vue} [vm]
+ * @param {Rebirth} [vm]
  * @param {Boolean} single
  * @return {String}
  */

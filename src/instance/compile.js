@@ -18,16 +18,7 @@ var transclude = require('../compiler/transclude')
 
 exports._compile = function (el) {
   var options = this.$options
-  if (options._linkFn) {
-    // pre-transcluded with linker, just use it
-    this._initElement(el)
-    this._unlinkFn = options._linkFn(this, el)
-  } else {
-    // transclude and init element
-    // transclude can potentially replace original
-    // so we need to keep reference
-    var original = el
-    el = transclude(el, options)
+  var original = el
     this._initElement(el)
     // compile and link the rest
     this._unlinkFn = compile(el, options)(this, el)
@@ -35,8 +26,8 @@ exports._compile = function (el) {
     if (options.replace) {
       _.replace(original, el)
     }
-  }
-  return el
+
+    return el
 }
 
 /**
@@ -55,8 +46,7 @@ exports._initElement = function (el) {
   } else {
     this.$el = el
   }
-  this.$el.__vue__ = this
-  this._callHook('beforeCompile')
+  this.$el.__Rebirth__ = this
 }
 
 /**
@@ -66,7 +56,7 @@ exports._initElement = function (el) {
  * @param {Node} node   - target node
  * @param {Object} desc - parsed directive descriptor
  * @param {Object} def  - directive definition object
- * @param {Vue|undefined} host - transclusion host component
+ * @param {Rebirth|undefined} host - transclusion host component
  */
 
 exports._bindDir = function (name, node, desc, def, host) {
@@ -124,7 +114,7 @@ exports._destroy = function (remove, deferCleanup) {
   }
   // remove reference to self on $el
   if (this.$el) {
-    this.$el.__vue__ = null
+    this.$el.__Rebirth__ = null
   }
   // remove DOM element
   var self = this
