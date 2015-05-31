@@ -31,9 +31,7 @@ module.exports = compile
 
 function compile (el, options, partial, transcluded) {
   // link function for the node itself.
-  var nodeLinkFn = options._asComponent && !partial
-    ? compileRoot(el, options)
-    : compileNode(el, options)
+  var nodeLinkFn = compileNode(el, options)
   // link function for the childNodes
   var childLinkFn =
     !(nodeLinkFn && nodeLinkFn.terminal) &&
@@ -96,6 +94,7 @@ function compile (el, options, partial, transcluded) {
   }
 
   return compositeLinkFn
+
 }
 
 /**
@@ -119,7 +118,7 @@ function teardownDirs (vm, dirs, destroying) {
 /**
  * Compile the root element of a component. There are
  * 3 types of things to process here:
- * 
+ *
  * 1. props on parent container (child scope)
  * 2. other attrs on parent container (parent scope)
  * 3. attrs on the component template root node, if

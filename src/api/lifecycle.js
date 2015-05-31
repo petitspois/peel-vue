@@ -26,18 +26,13 @@ exports.$mount = function (el) {
       return
     }
   }
+
   this._compile(el)
+
   this._isCompiled = true
-  this._callHook('compiled')
-  if (_.inDoc(this.$el)) {
-    this._callHook('attached')
-    this._initDOMHooks()
-    ready.call(this)
-  } else {
-    this._initDOMHooks()
-    this.$once('hook:attached', ready)
-  }
+
   return this
+
 }
 
 /**

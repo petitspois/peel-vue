@@ -19,6 +19,8 @@ var transclude = require('../compiler/transclude')
 exports._compile = function (el) {
   var options = this.$options
   var original = el
+
+    //this.$el = el
     this._initElement(el)
     // compile and link the rest
     this._unlinkFn = compile(el, options)(this, el)
@@ -28,6 +30,7 @@ exports._compile = function (el) {
     }
 
     return el
+
 }
 
 /**
