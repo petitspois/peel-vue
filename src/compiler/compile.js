@@ -190,25 +190,14 @@ function compileNode (node, options) {
  */
 
 function compileElement (el, options) {
-  if (checkTransclusion(el)) {
-    // unwrap textNode
-    if (el.hasAttribute('__vue__wrap')) {
-      el = el.firstChild
-    }
-    return compile(el, options._parent.$options, true, true)
-  }
   var linkFn
   var hasAttrs = el.hasAttributes()
-  // check element directives
-  linkFn = checkElementDirectives(el, options)
+
   // check terminal direcitves (repeat & if)
   if (!linkFn && hasAttrs) {
     linkFn = checkTerminalDirectives(el, options)
   }
-  // check component
-  if (!linkFn) {
-    linkFn = checkComponent(el, options)
-  }
+
   // normal directives
   if (!linkFn && hasAttrs) {
     linkFn = compileDirectives(el, options)

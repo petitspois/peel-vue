@@ -31,7 +31,6 @@ function Rebirth (options) {
 
 Rebirth.options = {
   directives  : require('./directives'),
-  transitions : {},
   components  : {},
   elementDirectives: {}
 }
