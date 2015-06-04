@@ -4,10 +4,6 @@ var textParser = require('../parsers/text')
 var dirParser = require('../parsers/directive')
 var templateParser = require('../parsers/template')
 
-// internal directives
-var propDef = require('../directives/prop')
-var componentDef = require('../directives/component')
-
 // terminal directives
 var terminalDirectives = [
   'repeat',
@@ -115,51 +111,7 @@ function teardownDirs (vm, dirs, destroying) {
   }
 }
 
-/**
- * Compile the root element of a component. There are
- * 3 types of things to process here:
- *
- * 1. props on parent container (child scope)
- * 2. other attrs on parent container (parent scope)
- * 3. attrs on the component template root node, if
- *    replace:true (child scope)
- *
- * Also, if this is a block instance, we only need to
- * compile 1 & 2 here.
- *
- * @param {Element} el
- * @param {Object} options
- * @return {Function}
- */
 
-function compileRoot (el, options) {
-  var isBlock = el.nodeType === 11 // DocumentFragment
-  var containerAttrs = options._containerAttrs
-  var replacerAttrs = options._replacerAttrs
-  var props = options.props
-  var propsLinkFn, parentLinkFn, replacerLinkFn
-  // 1. props
-  propsLinkFn = props
-    ? compileProps(el, containerAttrs, props)
-    : null
-  if (!isBlock) {
-    // 2. container attributes
-    if (containerAttrs) {
-      parentLinkFn = compileDirectives(containerAttrs, options)
-    }
-    if (replacerAttrs) {
-      // 3. replacer attributes
-      replacerLinkFn = compileDirectives(replacerAttrs, options)
-    }
-  }
-  return function rootLinkFn (vm, el, host) {
-    // explicitly passing null to props
-    // linkers because they don't need a real element
-    if (propsLinkFn) propsLinkFn(vm, null)
-    if (parentLinkFn) parentLinkFn(vm.$parent, el, host)
-    if (replacerLinkFn) replacerLinkFn(vm, el, host)
-  }
-}
 
 /**
  * Compile a node and return a nodeLinkFn based on the
@@ -359,131 +311,6 @@ function makeChildLinkFn (linkFns) {
   }
 }
 
-/**
- * Compile param attributes on a root element and return
- * a props link function.
- *
- * @param {Element|DocumentFragment} el
- * @param {Object} attrs
- * @param {Array} propNames
- * @return {Function} propsLinkFn
- */
-
-// regex to test if a path is "settable"
-// if not the prop binding is automatically one-way.
-var settablePathRE = /^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*|\[[^\[\]]\])*$/
-
-function compileProps (el, attrs, propNames) {
-  var props = []
-  var i = propNames.length
-  var name, value, prop
-  while (i--) {
-    name = propNames[i]
-    if (/[A-Z]/.test(name)) {
-      _.warn(
-        'You seem to be using camelCase for a component prop, ' +
-        'but HTML doesn\'t differentiate between upper and ' +
-        'lower case. You should use hyphen-delimited ' +
-        'attribute names. For more info see ' +
-        'http://vuejs.org/api/options.html#props'
-      )
-    }
-    value = attrs[name]
-    /* jshint eqeqeq:false */
-    if (value != null) {
-      prop = {
-        name: name,
-        value: value
-      }
-      var tokens = textParser.parse(value)
-      if (tokens) {
-        if (el && el.nodeType === 1) {
-          el.removeAttribute(name)
-        }
-        attrs[name] = null
-        prop.dynamic = true
-        prop.value = textParser.tokensToExp(tokens)
-        prop.oneTime =
-          tokens.length > 1 ||
-          tokens[0].oneTime ||
-          !settablePathRE.test(prop.value)
-      }
-      props.push(prop)
-    }
-  }
-  return makePropsLinkFn(props)
-}
-
-/**
- * Build a function that applies props to a vm.
- *
- * @param {Array} props
- * @return {Function} propsLinkFn
- */
-
-var dataAttrRE = /^data-/
-
-function makePropsLinkFn (props) {
-  return function propsLinkFn (vm, el) {
-    var i = props.length
-    var prop, path
-    while (i--) {
-      prop = props[i]
-      // props could contain dashes, which will be
-      // interpreted as minus calculations by the parser
-      // so we need to wrap the path here
-      path = _.camelize(prop.name.replace(dataAttrRE, ''))
-      if (prop.dynamic) {
-        vm._bindDir('prop', el, {
-          arg: path,
-          expression: prop.value,
-          oneWay: prop.oneTime
-        }, propDef)
-      } else {
-        // just set once
-        vm.$set(path, prop.value)
-      }
-    }
-  }
-}
-
-/**
- * Check for element directives (custom elements that should
- * be resovled as terminal directives).
- *
- * @param {Element} el
- * @param {Object} options
- */
-
-function checkElementDirectives (el, options) {
-  var tag = el.tagName.toLowerCase()
-  var def = options.elementDirectives[tag]
-  if (def) {
-    return makeTerminalNodeLinkFn(el, tag, '', options, def)
-  }
-}
-
-/**
- * Check if an element is a component. If yes, return
- * a component link function.
- *
- * @param {Element} el
- * @param {Object} options
- * @return {Function|undefined}
- */
-
-function checkComponent (el, options) {
-  var componentId = _.checkComponent(el, options)
-  if (componentId) {
-    var componentLinkFn = function (vm, el, host) {
-      vm._bindDir('component', el, {
-        expression: componentId
-      }, componentDef, host)
-    }
-    componentLinkFn.terminal = true
-    return componentLinkFn
-  }
-}
 
 /**
  * Check an element for terminal directives in fixed order.
@@ -676,19 +503,4 @@ function directiveComparator (a, b) {
   a = a.def.priority || 0
   b = b.def.priority || 0
   return a > b ? 1 : -1
-}
-
-/**
- * Check whether an element is transcluded
- *
- * @param {Element} el
- * @return {Boolean}
- */
-
-var transcludedFlagAttr = '__vue__transcluded'
-function checkTransclusion (el) {
-  if (el.nodeType === 1 && el.hasAttribute(transcludedFlagAttr)) {
-    el.removeAttribute(transcludedFlagAttr)
-    return true
-  }
 }

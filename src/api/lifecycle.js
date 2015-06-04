@@ -35,15 +35,6 @@ exports.$mount = function (el) {
 
 }
 
-/**
- * Mark an instance as ready.
- */
-
-function ready () {
-  this._isAttached = true
-  this._isReady = true
-  this._callHook('ready')
-}
 
 /**
  * Teardown the instance, simply delegate to the internal

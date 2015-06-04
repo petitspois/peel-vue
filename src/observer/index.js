@@ -1,8 +1,5 @@
 var _ = require('../util')
-var config = require('../config')
 var Dep = require('./dep')
-var arrayMethods = require('./array')
-var arrayKeys = Object.getOwnPropertyNames(arrayMethods)
 require('./object')
 
 var uid = 0
@@ -11,37 +8,8 @@ var uid = 0
  * Type enums
  */
 
-var ARRAY  = 0
 var OBJECT = 1
 
-/**
- * Augment an target Object or Array by intercepting
- * the prototype chain using __proto__
- *
- * @param {Object|Array} target
- * @param {Object} proto
- */
-
-function protoAugment (target, src) {
-  target.__proto__ = src
-}
-
-/**
- * Augment an target Object or Array by defining
- * hidden properties.
- *
- * @param {Object|Array} target
- * @param {Object} proto
- */
-
-function copyAugment (target, src, keys) {
-  var i = keys.length
-  var key
-  while (i--) {
-    key = keys[i]
-    _.define(target, key, src[key])
-  }
-}
 
 /**
  * Observer class that are attached to each observed

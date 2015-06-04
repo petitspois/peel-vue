@@ -1,7 +1,6 @@
 var _ = require('../util')
 var Directive = require('../directive')
 var compile = require('../compiler/compile')
-var transclude = require('../compiler/transclude')
 
 /**
  * Transclude, compile and link element.
@@ -41,14 +40,7 @@ exports._compile = function (el) {
  */
 
 exports._initElement = function (el) {
-  if (el instanceof DocumentFragment) {
-    this._isBlock = true
-    this.$el = this._blockStart = el.firstChild
-    this._blockEnd = el.lastChild
-    this._blockFragment = el
-  } else {
-    this.$el = el
-  }
+  this.$el = el
   this.$el.__Rebirth__ = this
 }
 
