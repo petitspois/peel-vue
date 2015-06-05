@@ -154,16 +154,7 @@ function compileElement (el, options) {
   if (!linkFn && hasAttrs) {
     linkFn = compileDirectives(el, options)
   }
-  // if the element is a textarea, we need to interpolate
-  // its content on initial render.
-  if (el.tagName === 'TEXTAREA') {
-    var realLinkFn = linkFn
-    linkFn = function (vm, el) {
-      el.value = vm.$interpolate(el.value)
-      if (realLinkFn) realLinkFn(vm, el)
-    }
-    linkFn.terminal = true
-  }
+
   return linkFn
 }
 
@@ -373,9 +364,7 @@ function makeTerminalNodeLinkFn (el, dirName, value, options, def) {
  */
 
 function compileDirectives (elOrAttrs, options) {
-  var attrs = _.isPlainObject(elOrAttrs)
-    ? mapToList(elOrAttrs)
-    : elOrAttrs.attributes
+  var attrs = elOrAttrs.attributes
   var i = attrs.length
   var dirs = []
   var attr, name, value, dir, dirName, dirDef
@@ -409,23 +398,6 @@ function compileDirectives (elOrAttrs, options) {
   }
 }
 
-/**
- * Convert a map (Object) of attributes to an Array.
- *
- * @param {Object} map
- * @return {Array}
- */
-
-function mapToList (map) {
-  var list = []
-  for (var key in map) {
-    list.push({
-      name: key,
-      value: map[key]
-    })
-  }
-  return list
-}
 
 /**
  * Build a link function for all directives on a single node.
