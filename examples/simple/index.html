@@ -9,6 +9,7 @@
     <div id="output">
         <input  type="text" rb-model="show">
         {{show}}
+        <input type="text" id="test-input" value="">
     </div>
     <script type="text/javascript">
         var vm = new Rebirth({
@@ -16,7 +17,12 @@
                 show:'init1212'
             }
          });
+
          vm.$mount('#output');
+         var node = document.querySelector('#test-input');
+         node.addEventListener('input',function(e){
+           console.log(e.target.value);
+         },false);
     </script>
   </body>
 </html>

@@ -1560,22 +1560,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // so we can capture the directives created during a
 	    // partial compilation.
 	    var originalDirCount = vm._directives.length
-	    var parentOriginalDirCount =
-	      vm.$parent && vm.$parent._directives.length
+
 	    // cache childNodes before linking parent, fix #657
 	    var childNodes = _.toArray(el.childNodes)
 	    // if this is a transcluded compile, linkers need to be
 	    // called in source scope, and the host needs to be
 	    // passed down.
-	    var source = transcluded ? vm.$parent : vm
+	    var source = vm
 	    var host = transcluded ? vm : undefined
 	    // link
 	    if (nodeLinkFn) nodeLinkFn(source, el, host)
 	    if (childLinkFn) childLinkFn(source, childNodes, host)
 
 	    var selfDirs = vm._directives.slice(originalDirCount)
-	    var parentDirs = vm.$parent &&
-	      vm.$parent._directives.slice(parentOriginalDirCount)
+
 
 	    /**
 	     * The linker function returns an unlink function that
@@ -1586,9 +1584,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    return function unlink (destroying) {
 	      teardownDirs(vm, selfDirs, destroying)
-	      if (parentDirs) {
-	        teardownDirs(vm.$parent, parentDirs)
-	      }
 	    }
 	  }
 
@@ -1876,7 +1871,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var attrs = elOrAttrs.attributes
 	  var i = attrs.length
 	  var dirs = []
-	  var attr, name, value, dir, dirName, dirDef
+	  var attr, name, value, dirName, dirDef
 	  while (i--) {
 	    attr = attrs[i]
 	    name = attr.name
@@ -1892,11 +1887,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          descriptors: dirParser.parse(value),
 	          def: dirDef
 	        })
-	      }
-	    } else if (config.interpolate) {
-	      dir = collectAttrDirective(name, value, options)
-	      if (dir) {
-	        dirs.push(dir)
 	      }
 	    }
 	  }
@@ -1936,42 +1926,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 
-	/**
-	 * Check an attribute for potential dynamic bindings,
-	 * and return a directive object.
-	 *
-	 * @param {String} name
-	 * @param {String} value
-	 * @param {Object} options
-	 * @return {Object}
-	 */
-
-	function collectAttrDirective (name, value, options) {
-	  var tokens = textParser.parse(value)
-	  if (tokens) {
-	    var def = options.directives.attr
-	    var i = tokens.length
-	    var allOneTime = true
-	    while (i--) {
-	      var token = tokens[i]
-	      if (token.tag && !token.oneTime) {
-	        allOneTime = false
-	      }
-	    }
-	    return {
-	      def: def,
-	      _link: allOneTime
-	        ? function (vm, el) {
-	            el.setAttribute(name, vm.$interpolate(value))
-	          }
-	        : function (vm, el) {
-	            var value = textParser.tokensToExp(tokens, vm)
-	            var desc = dirParser.parse(name + ':' + value)[0]
-	            vm._bindDir('attr', el, desc, def)
-	          }
-	    }
-	  }
-	}
 
 	/**
 	 * Directive priority sort comparator
@@ -4841,7 +4795,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var dirParser = __webpack_require__(40)
 	var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g
 	var cache, tagRE, htmlRE, firstChar, lastChar
-
+	console.log(config);
 	/**
 	 * Escape a string so it can be used in a RegExp
 	 * constructor.

@@ -51,22 +51,20 @@ function compile (el, options, partial, transcluded) {
     // so we can capture the directives created during a
     // partial compilation.
     var originalDirCount = vm._directives.length
-    var parentOriginalDirCount =
-      vm.$parent && vm.$parent._directives.length
+
     // cache childNodes before linking parent, fix #657
     var childNodes = _.toArray(el.childNodes)
     // if this is a transcluded compile, linkers need to be
     // called in source scope, and the host needs to be
     // passed down.
-    var source = transcluded ? vm.$parent : vm
+    var source = vm
     var host = transcluded ? vm : undefined
     // link
     if (nodeLinkFn) nodeLinkFn(source, el, host)
     if (childLinkFn) childLinkFn(source, childNodes, host)
 
     var selfDirs = vm._directives.slice(originalDirCount)
-    var parentDirs = vm.$parent &&
-      vm.$parent._directives.slice(parentOriginalDirCount)
+
 
     /**
      * The linker function returns an unlink function that
@@ -77,9 +75,6 @@ function compile (el, options, partial, transcluded) {
      */
     return function unlink (destroying) {
       teardownDirs(vm, selfDirs, destroying)
-      if (parentDirs) {
-        teardownDirs(vm.$parent, parentDirs)
-      }
     }
   }
 
@@ -367,7 +362,7 @@ function compileDirectives (elOrAttrs, options) {
   var attrs = elOrAttrs.attributes
   var i = attrs.length
   var dirs = []
-  var attr, name, value, dir, dirName, dirDef
+  var attr, name, value, dirName, dirDef
   while (i--) {
     attr = attrs[i]
     name = attr.name
@@ -383,11 +378,6 @@ function compileDirectives (elOrAttrs, options) {
           descriptors: dirParser.parse(value),
           def: dirDef
         })
-      }
-    } else if (config.interpolate) {
-      dir = collectAttrDirective(name, value, options)
-      if (dir) {
-        dirs.push(dir)
       }
     }
   }
@@ -427,42 +417,6 @@ function makeNodeLinkFn (directives) {
   }
 }
 
-/**
- * Check an attribute for potential dynamic bindings,
- * and return a directive object.
- *
- * @param {String} name
- * @param {String} value
- * @param {Object} options
- * @return {Object}
- */
-
-function collectAttrDirective (name, value, options) {
-  var tokens = textParser.parse(value)
-  if (tokens) {
-    var def = options.directives.attr
-    var i = tokens.length
-    var allOneTime = true
-    while (i--) {
-      var token = tokens[i]
-      if (token.tag && !token.oneTime) {
-        allOneTime = false
-      }
-    }
-    return {
-      def: def,
-      _link: allOneTime
-        ? function (vm, el) {
-            el.setAttribute(name, vm.$interpolate(value))
-          }
-        : function (vm, el) {
-            var value = textParser.tokensToExp(tokens, vm)
-            var desc = dirParser.parse(name + ':' + value)[0]
-            vm._bindDir('attr', el, desc, def)
-          }
-    }
-  }
-}
 
 /**
  * Directive priority sort comparator
