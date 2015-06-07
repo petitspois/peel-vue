@@ -3,7 +3,6 @@ var config = require('../config')
 var dirParser = require('./directive')
 var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g
 var cache, tagRE, htmlRE, firstChar, lastChar
-console.log(config);
 /**
  * Escape a string so it can be used in a RegExp
  * constructor.
