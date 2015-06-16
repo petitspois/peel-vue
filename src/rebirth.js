@@ -1,5 +1,4 @@
-var _ = require('./util')
-var extend = _.extend
+var _ = require('./util');
 
 /**
  * The exposed Rebirth constructor.
@@ -19,22 +18,6 @@ function Rebirth (options) {
   this._init(options)
 }
 
-
-/**
- * Rebirth and every constructor that extends Rebirth has an
- * associated options object, which can be accessed during
- * compilation steps as `this.constructor.options`.
- *
- * These can be seen as the default options of every
- * Rebirth instance.
- */
-
-Rebirth.options = {
-  directives  : require('./directives'),
-  components  : {},
-  elementDirectives: {}
-}
-
 /**
  * Build up the prototype
  */
@@ -46,16 +29,7 @@ var p = Rebirth.prototype
  * Mixin internal instance methods
  */
 
-extend(p, require('./instance/init'))
-extend(p, require('./instance/events'))
-extend(p, require('./instance/scope'))
-extend(p, require('./instance/compile'))
-
-/**
- * Mixin public API methods
- */
-
-extend(p, require('./api/events'))
-extend(p, require('./api/lifecycle'))
+_.extend(p, require('./instance/init.js'));
+_.extend(p, require('./instance/scope.js'));
 
 module.exports = _.Rebirth = Rebirth
