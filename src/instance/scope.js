@@ -21,7 +21,7 @@ exports._initData = function() {
     i = keys.length
     while (i--) {
         key = keys[i]
-        if (_.isReserved(key)) {
+        if (!_.isReserved(key)) {
             this._proxy(key)
         }
     }
