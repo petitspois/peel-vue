@@ -35,7 +35,7 @@ Observer.target = null
 
 var p = Observer.prototype
 
-Observer.create = function() {
+Observer.create = function(value) {
     if (
         _.isPlainObject(value)
     ) {
@@ -96,3 +96,30 @@ p.convert = function (key, val) {
     }
   })
 }
+
+/**
+ * Try to carete an observer for a child value,
+ * and if value is array, link dep to the array.
+ *
+ * @param {*} val
+ * @return {Dep|undefined}
+ */
+
+p.observe = function (val) {
+  return Observer.create(val)
+}
+
+/**
+ * Add an owner vm, so that when $add/$delete mutations
+ * happen we can notify owner vms to proxy the keys and
+ * digest the watchers. This is only called when the object
+ * is observed as an instance's root $data.
+ *
+ * @param {Rebirth} vm
+ */
+
+p.addVm = function (vm) {
+  (this.vms = this.vms || []).push(vm)
+}
+
+module.exports = Observer

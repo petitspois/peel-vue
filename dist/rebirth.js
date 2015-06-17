@@ -154,7 +154,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this._proxy(key)
 	        }
 	    }
-	    Observer.create(data)
+	    Observer.create(data).addVm(this)
 	}
 
 	exports._proxy = function(key){
@@ -951,7 +951,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var p = Observer.prototype
 
-	Observer.create = function() {
+	Observer.create = function(value) {
 	    if (
 	        _.isPlainObject(value)
 	    ) {
@@ -1012,6 +1012,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  })
 	}
+
+	/**
+	 * Try to carete an observer for a child value,
+	 * and if value is array, link dep to the array.
+	 *
+	 * @param {*} val
+	 * @return {Dep|undefined}
+	 */
+
+	p.observe = function (val) {
+	  return Observer.create(val)
+	}
+
+	/**
+	 * Add an owner vm, so that when $add/$delete mutations
+	 * happen we can notify owner vms to proxy the keys and
+	 * digest the watchers. This is only called when the object
+	 * is observed as an instance's root $data.
+	 *
+	 * @param {Rebirth} vm
+	 */
+
+	p.addVm = function (vm) {
+	  (this.vms = this.vms || []).push(vm)
+	}
+
+	module.exports = Observer
 
 
 /***/ },

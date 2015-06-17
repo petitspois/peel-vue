@@ -25,7 +25,7 @@ exports._initData = function() {
             this._proxy(key)
         }
     }
-    Observer.create(data)
+    Observer.create(data).addVm(this)
 }
 
 exports._proxy = function(key){
