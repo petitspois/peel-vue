@@ -31,5 +31,14 @@ var p = Rebirth.prototype
 
 _.extend(p, require('./instance/init.js'));
 _.extend(p, require('./instance/scope.js'));
+_.extend(p, require('./instance/compile'))
+
+
+/**
+ * Mixin public API methods
+ */
+
+_.extend(p, require('./api/lifecycle'))
+
 
 module.exports = _.Rebirth = Rebirth

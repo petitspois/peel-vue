@@ -14,6 +14,10 @@ exports._init = function(options){
 
     this.$el = null
 
+
+    // lifecycle state
+    this._isCompiled  = false
+
     this._data = options.data || {}
 
     this._initScope();
