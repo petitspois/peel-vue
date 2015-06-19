@@ -7,7 +7,7 @@ var _ = require('./debug')
  * This is extracted into its own utility so it can
  * be used in multiple scenarios.
  *
- * @param {Rebirth} vm
+ * @param {Yiu} vm
  * @param {Array<Object>} filters
  * @param {Object} [target]
  * @return {Object}
@@ -56,7 +56,7 @@ exports.resolveFilters = function (vm, filters, target) {
  *
  * @param {*} value
  * @param {Array} filters
- * @param {Rebirth} vm
+ * @param {Yiu} vm
  * @param {*} oldVal
  * @return {*}
  */

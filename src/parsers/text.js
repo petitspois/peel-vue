@@ -1,7 +1,7 @@
 var config = require('../config')
 var dirParser = require('./directive')
 var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g
-var cache, tagRE, htmlRE, firstChar, lastChar
+var tagRE, htmlRE, firstChar, lastChar
 /**
  *
  *  特殊符号转换 { => '\{'
@@ -64,15 +64,19 @@ function compileRegex () {
  */
 
 exports.parse = function (text) {
+
+  //生产正则 tagRE and htmlRE
   if (config._delimitersChanged) {
     compileRegex()
   }
+
   if (!tagRE.test(text)) {
     return null
   }
+
   var tokens = []
   var lastIndex = tagRE.lastIndex = 0
-  var match, index, value, first, oneTime
+  var match, index, value, first
   /* jshint boss:true */
   while (match = tagRE.exec(text)) {
     index = match.index
@@ -84,15 +88,12 @@ exports.parse = function (text) {
     }
     // tag token
     first = match[1].charCodeAt(0)
-    oneTime = first === 0x2A // *
-    value = oneTime
-      ? match[1].slice(1)
-      : match[1]
+
+    value =  match[1]
     tokens.push({
       tag: true,
       value: value.trim(),
-      html: htmlRE.test(match[0]),
-      oneTime: oneTime
+      html: htmlRE.test(match[0])
     })
     lastIndex = index + match[0].length
   }
@@ -101,7 +102,6 @@ exports.parse = function (text) {
       value: text.slice(lastIndex)
     })
   }
-  cache.put(text, tokens)
   return tokens
 }
 
@@ -111,7 +111,7 @@ exports.parse = function (text) {
  * into one single expression as '"a " + b + " c"'.
  *
  * @param {Array} tokens
- * @param {Rebirth} [vm]
+ * @param {Yiu} [vm]
  * @return {String}
  */
 
@@ -127,7 +127,7 @@ exports.tokensToExp = function (tokens, vm) {
  * Format a single token.
  *
  * @param {Object} token
- * @param {Rebirth} [vm]
+ * @param {Yiu} [vm]
  * @param {Boolean} single
  * @return {String}
  */

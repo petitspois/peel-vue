@@ -20,7 +20,7 @@ function enableDebug () {
 
   exports.log = function (msg) {
     if (hasConsole && config.debug) {
-      console.log('[Rebirth info]: ' + msg)
+      console.log('[Yiu info]: ' + msg)
     }
   }
 
@@ -32,7 +32,7 @@ function enableDebug () {
 
   exports.warn = function (msg) {
     if (hasConsole && (!config.silent || config.debug)) {
-      console.warn('[Rebirth warn]: ' + msg)
+      console.warn('[Yiu warn]: ' + msg)
       /* istanbul ignore if */
       if (config.debug) {
         /* jshint debug: true */

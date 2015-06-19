@@ -2,13 +2,6 @@ var _ = require('../util')
 var config = require('../config')
 var textParser = require('../parsers/text')
 var dirParser = require('../parsers/directive')
-var templateParser = require('../parsers/template')
-
-// terminal directives
-var terminalDirectives = [
-  'repeat',
-  'if'
-]
 
 module.exports = compile
 
@@ -25,21 +18,17 @@ module.exports = compile
  * @return {Function}
  */
 
-function compile (el, options, partial, transcluded) {
-  // link function for the node itself.
+function compile (el, options) {
+
+  // 连接函数在当前节点
   var nodeLinkFn = compileNode(el, options)
-  // link function for the childNodes
-  var childLinkFn =
-    !(nodeLinkFn && nodeLinkFn.terminal) &&
-    el.tagName !== 'SCRIPT' &&
-    el.hasChildNodes()
+  // 连接函数在子节点
+  var childLinkFn = el.hasChildNodes()
       ? compileNodeList(el.childNodes, options)
       : null
 
   /**
-   * A composite linker function to be called on a already
-   * compiled piece of DOM, which instantiates all directive
-   * instances.
+   * 复合连接器，实例化所有指令
    *
    * @param {Vue} vm
    * @param {Element|DocumentFragment} el
@@ -47,65 +36,20 @@ function compile (el, options, partial, transcluded) {
    */
 
   function compositeLinkFn (vm, el) {
-    // save original directive count before linking
-    // so we can capture the directives created during a
-    // partial compilation.
-    var originalDirCount = vm._directives.length
 
     // cache childNodes before linking parent, fix #657
     var childNodes = _.toArray(el.childNodes)
-    // if this is a transcluded compile, linkers need to be
-    // called in source scope, and the host needs to be
-    // passed down.
-    var source = vm
-    var host = transcluded ? vm : undefined
+
     // link
-    if (nodeLinkFn) nodeLinkFn(source, el, host)
-    if (childLinkFn) childLinkFn(source, childNodes, host)
+    if (nodeLinkFn) nodeLinkFn(vm, el)
+    if (childLinkFn) childLinkFn(vm, childNodes)
 
-    var selfDirs = vm._directives.slice(originalDirCount)
-
-
-    /**
-     * The linker function returns an unlink function that
-     * tearsdown all directives instances generated during
-     * the process.
-     *
-     * @param {Boolean} destroying
-     */
-    return function unlink (destroying) {
-      teardownDirs(vm, selfDirs, destroying)
-    }
   }
 
-  // transcluded linkFns are terminal, because it takes
-  // over the entire sub-tree.
-  if (transcluded) {
-    compositeLinkFn.terminal = true
-  }
 
   return compositeLinkFn
 
 }
-
-/**
- * Teardown a subset of directives on a vm.
- *
- * @param {Vue} vm
- * @param {Array} dirs
- * @param {Boolean} destroying
- */
-
-function teardownDirs (vm, dirs, destroying) {
-  var i = dirs.length
-  while (i--) {
-    dirs[i]._teardown()
-    if (!destroying) {
-      vm._directives.$remove(dirs[i])
-    }
-  }
-}
-
 
 
 /**
@@ -183,9 +127,7 @@ function compileTextNode (node, options) {
 
 function processTextToken (token, options) {
   var el
-  if (token.oneTime) {
-    el = document.createTextNode(token.value)
-  } else {
+
     if (token.html) {
       el = document.createComment('v-html')
       setTokenType('html')
@@ -196,7 +138,6 @@ function processTextToken (token, options) {
       el = document.createTextNode(' ')
       setTokenType('text')
     }
-  }
   function setTokenType (type) {
     token.type = type
     token.def = options.directives[type]
@@ -221,18 +162,8 @@ function makeTextNodeLinkFn (tokens, frag) {
       token = tokens[i]
       value = token.value
       if (token.tag) {
-        node = childNodes[i]
-        if (token.oneTime) {
-          value = vm.$eval(value)
-          if (token.html) {
-            _.replace(node, templateParser.parse(value, true))
-          } else {
-            node.data = value
-          }
-        } else {
-          vm._bindDir(token.type, node,
-                      token.descriptor, token.def)
-        }
+          node = childNodes[i]
+          vm._bindDir(token.type, node,  token.descriptor, token.def)
       }
     }
     _.replace(el, fragClone)
@@ -253,10 +184,7 @@ function compileNodeList (nodeList, options) {
   for (var i = 0, l = nodeList.length; i < l; i++) {
     node = nodeList[i]
     nodeLinkFn = compileNode(node, options)
-    childLinkFn =
-      !(nodeLinkFn && nodeLinkFn.terminal) &&
-      node.tagName !== 'SCRIPT' &&
-      node.hasChildNodes()
+    childLinkFn = node.hasChildNodes()
         ? compileNodeList(node.childNodes, options)
         : null
     linkFns.push(nodeLinkFn, childLinkFn)
@@ -293,58 +221,12 @@ function makeChildLinkFn (linkFns) {
 }
 
 
-/**
- * Check an element for terminal directives in fixed order.
- * If it finds one, return a terminal link function.
- *
- * @param {Element} el
- * @param {Object} options
- * @return {Function} terminalLinkFn
- */
-
-function checkTerminalDirectives (el, options) {
-  if (_.attr(el, 'pre') !== null) {
-    return skip
-  }
-  var value, dirName
-  /* jshint boss: true */
-  for (var i = 0, l = terminalDirectives.length; i < l; i++) {
-    dirName = terminalDirectives[i]
-    if ((value = _.attr(el, dirName)) !== null) {
-      return makeTerminalNodeLinkFn(el, dirName, value, options)
-    }
-  }
-}
-
 function skip () {}
 skip.terminal = true
 
-/**
- * Build a node link function for a terminal directive.
- * A terminal link function terminates the current
- * compilation recursion and handles compilation of the
- * subtree in the directive.
- *
- * @param {Element} el
- * @param {String} dirName
- * @param {String} value
- * @param {Object} options
- * @param {Object} [def]
- * @return {Function} terminalLinkFn
- */
-
-function makeTerminalNodeLinkFn (el, dirName, value, options, def) {
-  var descriptor = dirParser.parse(value)[0]
-  def = def || options.directives[dirName]
-  var fn = function terminalNodeLinkFn (vm, el, host) {
-    vm._bindDir(dirName, el, descriptor, def, host)
-  }
-  fn.terminal = true
-  return fn
-}
 
 /**
- * Compile the directives on an element and return a linker.
+ * 在元素上编译指令，并返回连接器
  *
  * @param {Element|Object} elOrAttrs
  *        - could be an object of already-extracted
@@ -353,8 +235,8 @@ function makeTerminalNodeLinkFn (el, dirName, value, options, def) {
  * @return {Function}
  */
 
-function compileDirectives (elOrAttrs, options) {
-  var attrs = elOrAttrs.attributes
+function compileDirectives (el, options) {
+  var attrs = el.attributes
   var i = attrs.length
   var dirs = []
   var attr, name, value, dirName, dirDef
@@ -366,7 +248,6 @@ function compileDirectives (elOrAttrs, options) {
     if (name.indexOf(config.prefix) === 0) {
       dirName = name.slice(config.prefix.length)
       dirDef = options.directives[dirName]
-      _.assertAsset(dirDef, 'directive', dirName)
       if (dirDef) {
         dirs.push({
           name: dirName,

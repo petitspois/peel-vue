@@ -6,7 +6,7 @@ var meta = require('./package.json')
 var watch = require('gulp-watch')
 
 var banner = ['/**',
-	'* Rebirth v${version}',
+	'* Yiu v${version}',
 	'* (c) 2015 ${author}',
 	'* Released under the ${license} License.',
 	'*/',
@@ -26,17 +26,17 @@ gulp.task('watch', function() {
 });
 
 gulp.task('default', function() {
-	return gulp.src('./src/rebirth.js')
+	return gulp.src('./src/yiu.js')
 		.pipe(webpack({
 			output: {
-				library: 'Rebirth',
+				library: 'Yiu',
 				libraryTarget: 'umd',
-				filename: 'rebirth.js'
+				filename: 'yiu.js'
 			}
 		}))
 		.pipe(header(banner, bannerVars))
 		.pipe(gulp.dest('dist/'))
-		.pipe(uglify('rebirth.min.js', {
+		.pipe(uglify('yiu.min.js', {
 			mangle: true,
 			compress: true
 		}))

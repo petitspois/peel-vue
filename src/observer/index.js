@@ -115,7 +115,7 @@ p.observe = function (val) {
  * digest the watchers. This is only called when the object
  * is observed as an instance's root $data.
  *
- * @param {Rebirth} vm
+ * @param {Yiu} vm
  */
 
 p.addVm = function (vm) {

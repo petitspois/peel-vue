@@ -1,7 +1,7 @@
 var _ = require('./util');
 
 /**
- * The exposed Rebirth constructor.
+ * The exposed Yiu constructor.
  *
  * API conventions:
  * - public API methods/properties are prefiexed with `$`
@@ -14,7 +14,7 @@ var _ = require('./util');
  * @public
  */
 
-function Rebirth (options) {
+function Yiu (options) {
   this._init(options)
 }
 
@@ -22,8 +22,21 @@ function Rebirth (options) {
  * Build up the prototype
  */
 
-var p = Rebirth.prototype
+var p = Yiu.prototype
 
+
+/**
+ * Yiu and every constructor that extends Yiu has an
+ * associated options object, which can be accessed during
+ * compilation steps as `this.constructor.options`.
+ *
+ * These can be seen as the default options of every
+ * Yiu instance.
+ */
+
+Yiu.options = {
+  directives  : require('./directives')
+}
 
 /**
  * Mixin internal instance methods
@@ -41,4 +54,4 @@ _.extend(p, require('./instance/compile'))
 _.extend(p, require('./api/lifecycle'))
 
 
-module.exports = _.Rebirth = Rebirth
+module.exports = _.Yiu = Yiu

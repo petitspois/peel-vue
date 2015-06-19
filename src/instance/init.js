@@ -1,3 +1,4 @@
+var mergeOptions = require('../util/merge-option')
 /**
  * The main init sequence. This is called for every
  * instance, including ones that are created from extended
@@ -14,9 +15,21 @@ exports._init = function(options){
 
     this.$el = null
 
+    this._watcherList  = [] // all watchers as an array
+
+    this._directives   = [] // all directives
+
+    this._watchers     = {} // internal watchers as a hash
 
     // lifecycle state
     this._isCompiled  = false
+
+    // merge options.
+    options = this.$options = mergeOptions(
+      this.constructor.options,
+      options,
+      this
+    )
 
     this._data = options.data || {}
 

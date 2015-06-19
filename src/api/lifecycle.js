@@ -1,5 +1,3 @@
-var _ = require('../util')
-
 /**
  * Set instance target element and kick off the compilation
  * process. The passed in `el` can be a selector string, an
@@ -12,16 +10,7 @@ var _ = require('../util')
 
 exports.$mount = function (el) {
 
-  if (!el) {
-    el = document.createElement('div')
-  } else if (typeof el === 'string') {
-    var selector = el
-    el = document.querySelector(el)
-    if (!el) {
-      _.warn('Cannot find element: ' + selector)
-      return
-    }
-  }
+  el = document.querySelector(el)
 
   this._compile(el)
 

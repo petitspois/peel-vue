@@ -10,7 +10,7 @@ var extend = _.extend
  *
  * @param {*} parentVal
  * @param {*} childVal
- * @param {Rebirth} [vm]
+ * @param {Yiu} [vm]
  */
 
 var strats = Object.create(null)
@@ -39,7 +39,7 @@ function mergeData (to, from) {
 
 strats.data = function (parentVal, childVal, vm) {
   if (!vm) {
-    // in a Rebirth.extend merge, both should be functions
+    // in a Yiu.extend merge, both should be functions
     if (!childVal) {
       return parentVal
     }
@@ -139,7 +139,7 @@ strats.elementDirectives = function (parentVal, childVal, vm, key) {
   var ret = Object.create(
     vm && vm.$parent
       ? vm.$parent.$options[key]
-      : _.Rebirth.options[key]
+      : _.Yiu.options[key]
   )
   if (parentVal) {
     var keys = Object.keys(parentVal)
@@ -210,7 +210,7 @@ var defaultStrat = function (parentVal, childVal) {
  *
  * @param {Object} parent
  * @param {Object} child
- * @param {Rebirth} [vm] - if vm is present, indicates this is
+ * @param {Yiu} [vm] - if vm is present, indicates this is
  *                     an instantiation merge.
  */
 
