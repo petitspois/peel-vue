@@ -84,16 +84,14 @@ p._bind = function (def) {
           deep: this.deep
         }
       )
-    } else {
-      watcher.addCb(update)
     }
 
     this._watcher = watcher
-    if (this._initValue != null) {
-      watcher.set(this._initValue)
-    } else if (this.update) {
+
+    if (this.update) {
       this.update(watcher.value)
     }
+
   }
   this._bound = true
 }
