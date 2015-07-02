@@ -168,7 +168,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _ = __webpack_require__(5)
 
-	var Observer = __webpack_require__(10)
+	var Observer = __webpack_require__(16)
 
 	/**
 	 * Setup the scope of an instance, which contains:
@@ -340,7 +340,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	// manipulation directives
-	exports.text = __webpack_require__(16)
+	exports.text       = __webpack_require__(10)
+
+	// event listener directives
+	exports.model      = __webpack_require__(17)
 
 
 /***/ },
@@ -587,9 +590,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
-	var config = __webpack_require__(17)
-	var textParser = __webpack_require__(18)
-	var dirParser = __webpack_require__(19)
+	var config = __webpack_require__(18)
+	var textParser = __webpack_require__(19)
+	var dirParser = __webpack_require__(20)
 
 	module.exports = compile
 
@@ -901,9 +904,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
-	var config = __webpack_require__(17)
-	var Watcher = __webpack_require__(20)
-	var textParser = __webpack_require__(18)
+	var config = __webpack_require__(18)
+	var Watcher = __webpack_require__(21)
+	var textParser = __webpack_require__(19)
 
 	/**
 	 * A directive links a DOM element with a piece of data,
@@ -1095,131 +1098,20 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
-	var Dep = __webpack_require__(21)
 
-	var uid = 0
+	module.exports = {
 
-	/**
-	 * Type enums
-	 */
+	  bind: function () {
+	    this.attr = this.el.nodeType === 3
+	      ? 'nodeValue'
+	      : 'textContent'
+	  },
 
-	var OBJECT = 1
-
-	/**
-	 * Observer class that are attached to each observed
-	 * object. Once attached, the observer converts target
-	 * object's property keys into getter/setters that
-	 * collect dependencies and dispatches updates.
-	 *
-	 * @param {Array|Object} value
-	 * @param {Number} type
-	 * @constructor
-	 */
-
-	function Observer(value, type) {
-	    this.id = ++uid
-	    this.value = value
-	    this.active = true
-	    this.deps = []
-	    _.define(value, '__ob__', this)
-	    if (type === OBJECT) {
-	        this.walk(value)
-	    }
-	}
-
-	Observer.target = null
-
-	var p = Observer.prototype
-
-	Observer.create = function(value) {
-	    if (
-	        _.isPlainObject(value)
-	    ) {
-	        return new Observer(value, OBJECT)
-	    }
-	}
-
-	p.walk = function(obj) {
-	    var keys = Object.keys(obj)
-	    var i = keys.length
-	    var key
-	    while (i--) {
-	        key = keys[i]
-	        this.convert(key, obj[key])
-	    }
-	}
-
-	/**
-	 * Convert a property into getter/setter so we can emit
-	 * the events when the property is accessed/changed.
-	 *
-	 * @param {String} key
-	 * @param {*} val
-	 */
-
-	p.convert = function (key, val) {
-	  var ob = this
-	  var childOb = ob.observe(val)
-	  var dep = new Dep()
-	  if (childOb) {
-	    childOb.deps.push(dep)
+	  update: function (value) {
+	    this.el[this.attr] = _.toString(value)
 	  }
-	  Object.defineProperty(ob.value, key, {
-	    enumerable: true,
-	    configurable: true,
-	    get: function () {
-	      // Observer.target is a watcher whose getter is
-	      // currently being evaluated.
-	      if (ob.active && Observer.target) {
-	        Observer.target.addDep(dep)
-	      }
-	      return val
-	    },
-	    set: function (newVal) {
-	      if (newVal === val) return
-	      // remove dep from old value
-	      var oldChildOb = val && val.__ob__
-	      if (oldChildOb) {
-	        oldChildOb.deps.$remove(dep)
-	      }
-	      val = newVal
-	      // add dep to new value
-	      var newChildOb = ob.observe(newVal)
-	      if (newChildOb) {
-	        newChildOb.deps.push(dep)
-	      }
-	      dep.notify()
-	    }
-	  })
+	  
 	}
-
-	/**
-	 * Try to carete an observer for a child value,
-	 * and if value is array, link dep to the array.
-	 *
-	 * @param {*} val
-	 * @return {Dep|undefined}
-	 */
-
-	p.observe = function (val) {
-	  return Observer.create(val)
-	}
-
-	/**
-	 * Add an owner vm, so that when $add/$delete mutations
-	 * happen we can notify owner vms to proxy the keys and
-	 * digest the watchers. This is only called when the object
-	 * is observed as an instance's root $data.
-	 *
-	 * @param {Yiu} vm
-	 */
-
-	p.addVm = function (vm) {
-	  (this.vms = this.vms || []).push(vm)
-	}
-
-	module.exports = Observer
-
 
 /***/ },
 /* 11 */
@@ -1586,7 +1478,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var config = __webpack_require__(17)
+	var config = __webpack_require__(18)
 
 	/**
 	 * Check if a node is in the document.
@@ -1868,7 +1760,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var config = __webpack_require__(17)
+	var config = __webpack_require__(18)
 
 	/**
 	 * Enable debug utilities. The enableDebug() function and
@@ -1928,24 +1820,187 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
+	var Dep = __webpack_require__(22)
+
+	var uid = 0
+
+	/**
+	 * Type enums
+	 */
+
+	var OBJECT = 1
+
+	/**
+	 * Observer class that are attached to each observed
+	 * object. Once attached, the observer converts target
+	 * object's property keys into getter/setters that
+	 * collect dependencies and dispatches updates.
+	 *
+	 * @param {Array|Object} value
+	 * @param {Number} type
+	 * @constructor
+	 */
+
+	function Observer(value, type) {
+	    this.id = ++uid
+	    this.value = value
+	    this.active = true
+	    this.deps = []
+	    _.define(value, '__ob__', this)
+	    if (type === OBJECT) {
+	        this.walk(value)
+	    }
+	}
+
+	Observer.target = null
+
+	var p = Observer.prototype
+
+	Observer.create = function(value) {
+	    if (
+	        _.isPlainObject(value)
+	    ) {
+	        return new Observer(value, OBJECT)
+	    }
+	}
+
+	p.walk = function(obj) {
+	    var keys = Object.keys(obj)
+	    var i = keys.length
+	    var key
+	    while (i--) {
+	        key = keys[i]
+	        this.convert(key, obj[key])
+	    }
+	}
+
+	/**
+	 * Convert a property into getter/setter so we can emit
+	 * the events when the property is accessed/changed.
+	 *
+	 * @param {String} key
+	 * @param {*} val
+	 */
+
+	p.convert = function (key, val) {
+	  var ob = this
+	  var childOb = ob.observe(val)
+	  var dep = new Dep()
+	  if (childOb) {
+	    childOb.deps.push(dep)
+	  }
+	  Object.defineProperty(ob.value, key, {
+	    enumerable: true,
+	    configurable: true,
+	    get: function () {
+	      // Observer.target is a watcher whose getter is
+	      // currently being evaluated.
+	      if (ob.active && Observer.target) {
+	        Observer.target.addDep(dep)
+	      }
+	      return val
+	    },
+	    set: function (newVal) {
+	      if (newVal === val) return
+	      // remove dep from old value
+	      var oldChildOb = val && val.__ob__
+	      if (oldChildOb) {
+	        oldChildOb.deps.$remove(dep)
+	      }
+	      val = newVal
+	      // add dep to new value
+	      var newChildOb = ob.observe(newVal)
+	      if (newChildOb) {
+	        newChildOb.deps.push(dep)
+	      }
+	      dep.notify()
+	    }
+	  })
+	}
+
+	/**
+	 * Try to carete an observer for a child value,
+	 * and if value is array, link dep to the array.
+	 *
+	 * @param {*} val
+	 * @return {Dep|undefined}
+	 */
+
+	p.observe = function (val) {
+	  return Observer.create(val)
+	}
+
+	/**
+	 * Add an owner vm, so that when $add/$delete mutations
+	 * happen we can notify owner vms to proxy the keys and
+	 * digest the watchers. This is only called when the object
+	 * is observed as an instance's root $data.
+	 *
+	 * @param {Yiu} vm
+	 */
+
+	p.addVm = function (vm) {
+	  (this.vms = this.vms || []).push(vm)
+	}
+
+	module.exports = Observer
+
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(5)
+
+	var handlers = {
+	  _default: __webpack_require__(23),
+	  radio: __webpack_require__(24),
+	  select: __webpack_require__(25),
+	  checkbox: __webpack_require__(26)
+	}
 
 	module.exports = {
 
-	  bind: function () {
-	    this.attr = this.el.nodeType === 3
-	      ? 'nodeValue'
-	      : 'textContent'
-	  },
+	  priority: 800,
+	  twoWay: true,
+	  handlers: handlers,
 
-	  update: function (value) {
-	    this.el[this.attr] = _.toString(value)
+	  /**
+	   * Possible elements:
+	   *   <select>
+	   *   <textarea>
+	   *   <input type="*">
+	   *     - text
+	   *     - checkbox
+	   *     - radio
+	   *     - number
+	   *     - TODO: more types may be supplied as a plugin
+	   */
+
+	  bind: function () {
+	    var el = this.el
+	    var tag = el.tagName
+	    var handler
+	    if (tag === 'INPUT') {
+	      handler = handlers[el.type] || handlers._default
+	    } else if (tag === 'SELECT') {
+	      handler = handlers.select
+	    } else if (tag === 'TEXTAREA') {
+	      handler = handlers._default
+	    } else {
+	      _.warn('v-model does not support element type: ' + tag)
+	      return
+	    }
+	    handler.bind.call(this)
+	    this.update = handler.update
+	    this.unbind = handler.unbind
 	  }
 
 	}
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
@@ -2037,11 +2092,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var config = __webpack_require__(17)
-	var dirParser = __webpack_require__(19)
+	var config = __webpack_require__(18)
+	var dirParser = __webpack_require__(20)
 	var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g
 	var tagRE, htmlRE, firstChar, lastChar
 	/**
@@ -2221,7 +2276,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
@@ -2378,14 +2433,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
-	var config = __webpack_require__(17)
-	var Observer = __webpack_require__(10)
-	var expParser = __webpack_require__(22)
-	var batcher = __webpack_require__(23)
+	var config = __webpack_require__(18)
+	var Observer = __webpack_require__(16)
+	var expParser = __webpack_require__(27)
+	var batcher = __webpack_require__(28)
 	var uid = 0
 
 	/**
@@ -2638,7 +2693,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
@@ -2692,11 +2747,361 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
-	var Path = __webpack_require__(24)
+
+	module.exports = {
+
+	    bind: function() {
+	        var self = this
+	        var el = this.el
+
+	        // handle composition events.
+	        // http://blog.evanyou.me/2014/01/03/composition-event/
+	        var cpLocked = false
+	        this.cpLock = function() {
+	            cpLocked = true
+	        }
+	        this.cpUnlock = function() {
+	            cpLocked = false
+	                // in IE11 the "compositionend" event fires AFTER
+	                // the "input" event, so the input handler is blocked
+	                // at the end... have to call it here.
+	            set()
+	        }
+	        _.on(el, 'compositionstart', this.cpLock)
+	        _.on(el, 'compositionend', this.cpUnlock)
+
+	        // shared setter
+	        function set() {
+	            var val = el.value
+	            self.set(val)
+	        }
+
+	        // if the directive has filters, we need to
+	        // record cursor position and restore it after updating
+	        // the input with the filtered value.
+	        // also force update for type="range" inputs to enable
+	        // "lock in range" (see #506)
+	        this.listener = function textInputListener() {
+	            if (cpLocked) return
+	            set()
+	        }
+
+	        this.event = 'input'
+	            // Support jQuery events, since jQuery.trigger() doesn't
+	            // trigger native events in some cases and some plugins
+	            // rely on $.trigger()
+	            //
+	            // We want to make sure if a listener is attached using
+	            // jQuery, it is also removed with jQuery, that's why
+	            // we do the check for each directive instance and
+	            // store that check result on itself. This also allows
+	            // easier test coverage control by unsetting the global
+	            // jQuery variable in tests.
+
+	        _.on(el, this.event, this.listener)
+
+	        // IE9 doesn't fire input event on backspace/del/cut
+	        if (_.isIE9) {
+	            this.onCut = function() {
+	                _.nextTick(self.listener)
+	            }
+	            this.onDel = function(e) {
+	                if (e.keyCode === 46 || e.keyCode === 8) {
+	                    self.listener()
+	                }
+	            }
+	            _.on(el, 'cut', this.onCut)
+	            _.on(el, 'keyup', this.onDel)
+	        }
+
+	        // set initial value if present
+	        if (
+	            el.hasAttribute('value') ||
+	            (el.tagName === 'TEXTAREA' && el.value.trim())
+	        ) {
+	            this._initValue = el.value
+	        }
+
+	    },
+
+	    update: function(value) {
+	        this.el.value = _.toString(value)
+	    },
+
+	    unbind: function() {
+	        var el = this.el
+	        if (this.hasjQuery) {
+	            jQuery(el).off(this.event, this.listener)
+	        } else {
+	            _.off(el, this.event, this.listener)
+	        }
+	        _.off(el, 'compositionstart', this.cpLock)
+	        _.off(el, 'compositionend', this.cpUnlock)
+	        if (this.onCut) {
+	            _.off(el, 'cut', this.onCut)
+	            _.off(el, 'keyup', this.onDel)
+	        }
+	    }
+
+	}
+
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(5)
+
+	module.exports = {
+
+	  bind: function () {
+	    var self = this
+	    var el = this.el
+	    this.listener = function () {
+	      self.set(el.value)
+	    }
+	    _.on(el, 'change', this.listener)
+	    if (el.checked) {
+	      this._initValue = el.value
+	    }
+	  },
+
+	  update: function (value) {
+	    /* jshint eqeqeq: false */
+	    this.el.checked = value == this.el.value
+	  },
+
+	  unbind: function () {
+	    _.off(this.el, 'change', this.listener)
+	  }
+
+	}
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(5)
+	var Watcher = __webpack_require__(21)
+	var dirParser = __webpack_require__(20)
+
+	module.exports = {
+
+	  bind: function () {
+	    var self = this
+	    var el = this.el
+	    // check options param
+	    var optionsParam = this._checkParam('options')
+	    if (optionsParam) {
+	      initOptions.call(this, optionsParam)
+	    }
+	    this.number = this._checkParam('number') != null
+	    this.multiple = el.hasAttribute('multiple')
+	    this.listener = function () {
+	      var value = self.multiple
+	        ? getMultiValue(el)
+	        : el.value
+	      value = self.number
+	        ? _.isArray(value)
+	          ? value.map(_.toNumber)
+	          : _.toNumber(value)
+	        : value
+	      self.set(value)
+	    }
+	    _.on(el, 'change', this.listener)
+	    checkInitialValue.call(this)
+	  },
+
+	  update: function (value) {
+	    /* jshint eqeqeq: false */
+	    var el = this.el
+	    el.selectedIndex = -1
+	    var multi = this.multiple && _.isArray(value)
+	    var options = el.options
+	    var i = options.length
+	    var option
+	    while (i--) {
+	      option = options[i]
+	      option.selected = multi
+	        ? indexOf(value, option.value) > -1
+	        : value == option.value
+	    }
+	  },
+
+	  unbind: function () {
+	    _.off(this.el, 'change', this.listener)
+	    if (this.optionWatcher) {
+	      this.optionWatcher.teardown()
+	    }
+	  }
+
+	}
+
+	/**
+	 * Initialize the option list from the param.
+	 *
+	 * @param {String} expression
+	 */
+
+	function initOptions (expression) {
+	  var self = this
+	  var descriptor = dirParser.parse(expression)[0]
+	  function optionUpdateWatcher (value) {
+	    if (_.isArray(value)) {
+	      self.el.innerHTML = ''
+	      buildOptions(self.el, value)
+	      if (self._watcher) {
+	        self.update(self._watcher.value)
+	      }
+	    } else {
+	      _.warn('Invalid options value for v-model: ' + value)
+	    }
+	  }
+	  this.optionWatcher = new Watcher(
+	    this.vm,
+	    descriptor.expression,
+	    optionUpdateWatcher,
+	    {
+	      deep: true,
+	      filters: _.resolveFilters(this.vm, descriptor.filters)
+	    }
+	  )
+	  // update with initial value
+	  optionUpdateWatcher(this.optionWatcher.value)
+	}
+
+	/**
+	 * Build up option elements. IE9 doesn't create options
+	 * when setting innerHTML on <select> elements, so we have
+	 * to use DOM API here.
+	 *
+	 * @param {Element} parent - a <select> or an <optgroup>
+	 * @param {Array} options
+	 */
+
+	function buildOptions (parent, options) {
+	  var op, el
+	  for (var i = 0, l = options.length; i < l; i++) {
+	    op = options[i]
+	    if (!op.options) {
+	      el = document.createElement('option')
+	      if (typeof op === 'string') {
+	        el.text = el.value = op
+	      } else {
+	        el.text = op.text
+	        el.value = op.value
+	      }
+	    } else {
+	      el = document.createElement('optgroup')
+	      el.label = op.label
+	      buildOptions(el, op.options)
+	    }
+	    parent.appendChild(el)
+	  }
+	}
+
+	/**
+	 * Check the initial value for selected options.
+	 */
+
+	function checkInitialValue () {
+	  var initValue
+	  var options = this.el.options
+	  for (var i = 0, l = options.length; i < l; i++) {
+	    if (options[i].hasAttribute('selected')) {
+	      if (this.multiple) {
+	        (initValue || (initValue = []))
+	          .push(options[i].value)
+	      } else {
+	        initValue = options[i].value
+	      }
+	    }
+	  }
+	  if (typeof initValue !== 'undefined') {
+	    this._initValue = this.number
+	      ? _.toNumber(initValue)
+	      : initValue
+	  }
+	}
+
+	/**
+	 * Helper to extract a value array for select[multiple]
+	 *
+	 * @param {SelectElement} el
+	 * @return {Array}
+	 */
+
+	function getMultiValue (el) {
+	  return Array.prototype.filter
+	    .call(el.options, filterSelected)
+	    .map(getOptionValue)
+	}
+
+	function filterSelected (op) {
+	  return op.selected
+	}
+
+	function getOptionValue (op) {
+	  return op.value || op.text
+	}
+
+	/**
+	 * Native Array.indexOf uses strict equal, but in this
+	 * case we need to match string/numbers with soft equal.
+	 *
+	 * @param {Array} arr
+	 * @param {*} val
+	 */
+
+	function indexOf (arr, val) {
+	  /* jshint eqeqeq: false */
+	  var i = arr.length
+	  while (i--) {
+	    if (arr[i] == val) return i
+	  }
+	  return -1
+	}
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(5)
+
+	module.exports = {
+
+	  bind: function () {
+	    var self = this
+	    var el = this.el
+	    this.listener = function () {
+	      self.set(el.checked)
+	    }
+	    _.on(el, 'change', this.listener)
+	    if (el.checked) {
+	      this._initValue = el.checked
+	    }
+	  },
+
+	  update: function (value) {
+	    this.el.checked = !!value
+	  },
+
+	  unbind: function () {
+	    _.off(this.el, 'change', this.listener)
+	  }
+
+	}
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(5)
+	var Path = __webpack_require__(29)
 
 	var allowedKeywords =
 	  'Math,Date,this,true,false,null,undefined,Infinity,NaN,' +
@@ -2939,7 +3344,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 23 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
@@ -3039,7 +3444,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 24 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)

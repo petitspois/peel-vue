@@ -6,16 +6,17 @@
     <script src="../../dist/yiu.js"></script>
   </head>
   <body>
-    <div id="output">
-        {{show}}
+    <div id="demo">
+        <p>{{message}}</p>
+        <input y-model="message" />
     </div>
     <script type="text/javascript">
-        var vm = new Yiu({
-            data:{
-                show:'init'
-            }
-         });
-         vm.$mount('#output');
+    var demo = new Yiu({
+        data: {
+            message: 'Hello Yiu.js!'
+        }
+    });
+    demo.$mount('#demo');
     </script>
   </body>
 </html>

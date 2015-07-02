@@ -11,5 +11,5 @@ module.exports = {
   update: function (value) {
     this.el[this.attr] = _.toString(value)
   }
-
+  
 }
